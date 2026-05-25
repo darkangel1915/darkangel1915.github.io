@@ -1,189 +1,539 @@
 <!doctype html>
 <html lang="en">
-  <head>
-  	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>Luis Uribe</title>
-    <link rel="icon" href="/font/favicon.ico" type="image/x-icon">
-    
-    <!--[if lt IE 9]>
-      <script>
-        document.createElement('video');
-      </script>
-    <![endif]-->
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Luis Uribe — Video Producer & Editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --bg-2: #141414;
+    --fg: #ffffff;
+    --muted: #6e6e6e;
+    --muted-2: #9a9a9a;
+    --line: #1f1f1f;
+    --line-hover: #2a2a2a;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-weight: 400;
+    line-height: 1.4;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    letter-spacing: -0.005em;
+  }
+  a { color: inherit; text-decoration: none; }
+  ::selection { background: #fff; color: #000; }
 
-    <script>
+  .mono { font-family: 'Geist Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums; }
+  .serif-i { font-family: 'Instrument Serif', serif; font-style: italic; font-weight: 400; }
 
-      var video = document.getElementById("bgvid"),
-      pauseButton = document.querySelector("#polina button");
+  /* ---------- NAV ---------- */
+  nav {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 24px;
+    background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav .nav-left { display: flex; gap: 36px; }
+  nav .nav-left a {
+    font-size: 13px; color: var(--muted-2);
+    transition: color .2s;
+    letter-spacing: -0.005em;
+  }
+  nav .nav-left a:hover { color: var(--fg); }
+  nav .nav-right {
+    display: flex; align-items: center; gap: 20px;
+  }
+  nav .meta {
+    display: flex; align-items: center; gap: 18px;
+    font-size: 12.5px; color: var(--muted-2);
+  }
+  nav .meta .time { color: var(--fg); }
+  nav .avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    overflow: hidden;
+    background: #141414;
+    border: 1px solid var(--line);
+    flex-shrink: 0;
+    transition: border-color .25s, transform .25s;
+  }
+  nav .avatar:hover { border-color: #fff; transform: scale(1.05); }
+  nav .avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-      /*function vidFade() {
-        video.classList.add("stopfade");
-      }*/
+  /* ---------- HERO ---------- */
+  .hero {
+    padding: 44px 24px 64px;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-inner {
+    display: flex; align-items: baseline; flex-wrap: wrap;
+    gap: 4px 28px;
+  }
+  .hero h1 {
+    font-size: clamp(56px, 11vw, 168px);
+    font-weight: 500;
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+  }
+  .hero .role {
+    font-family: 'Instrument Serif', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(28px, 4.2vw, 56px);
+    color: var(--muted-2);
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
 
-      /*video.addEventListener('ended', function()
-      {
-      // only functional if "loop" is removed 
-      video.pause();
-      vidFade();
-      }, false); 
-      /*
-      pauseButton.addEventListener("click", function() {
-        video.classList.toggle("stopfade");
-        if (video.paused) {
-          video.play();
-          pauseButton.innerHTML = "Pause";
-        } else {
-          video.pause();
-          pauseButton.innerHTML = "Paused";
-        }
-      }, false);*/
+  /* ---------- GRID ---------- */
+  .work {
+    padding: 36px 24px 68px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 22px 18px;
+  }
+  .card {
+    cursor: pointer;
+    display: flex; flex-direction: column;
+    gap: 12px;
+    transition: transform .35s cubic-bezier(.2,.7,.2,1), opacity .25s;
+  }
+  .card:hover { transform: translateY(-3px); }
+  .grid:hover .card:not(:hover) { opacity: 0.5; }
+  .card .thumb {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--bg-2);
+    border-radius: 6px;
+    position: relative;
+  }
+  .card .thumb img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform .8s cubic-bezier(.2,.7,.2,1);
+  }
+  .card:hover .thumb img { transform: scale(1.05); }
+  .card .info {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;
+  }
+  .card .title {
+    font-size: 13px; font-weight: 500; color: var(--fg);
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+  }
+  .card .num {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px; color: var(--muted); flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+    padding-top: 1px;
+  }
+  .card .cat {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px; color: var(--muted);
+    letter-spacing: 0.14em; text-transform: uppercase;
+    font-weight: 400;
+  }
 
-      /*video.addEventListener('touchstart', function(e) {
-      e.preventDefault();
-      video.play();
-      })*/
+  /* ---------- ABOUT ---------- */
+  .about {
+    padding: 88px 24px;
+    border-top: 1px solid var(--line);
+  }
+  .about-inner {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 72px;
+    align-items: center;
+    max-width: 1180px;
+  }
+  .about .photo {
+    width: 300px; height: 300px; border-radius: 50%;
+    overflow: hidden;
+    background: #141414;
+    border: 1px solid var(--line);
+    position: relative;
+  }
+  .about .photo img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .about .bio .label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px; color: var(--muted); letter-spacing: 0.2em;
+    text-transform: uppercase; margin-bottom: 22px;
+  }
+  .about .bio p {
+    font-size: 19px; line-height: 1.55; color: var(--fg);
+    font-weight: 400; max-width: 680px;
+    letter-spacing: -0.01em;
+  }
+  .about .bio p .accent {
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    color: var(--muted-2);
+  }
 
-	  function choose(){
+  /* ---------- CONTACT ---------- */
+  .contact {
+    padding: 88px 24px 60px;
+    border-top: 1px solid var(--line);
+  }
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    align-items: end;
+    max-width: 1180px;
+  }
+  .contact h2 {
+    font-size: clamp(56px, 9vw, 120px);
+    font-weight: 500;
+    letter-spacing: -0.045em;
+    line-height: 0.92;
+  }
+  .contact h2 .serif {
+    font-family: 'Instrument Serif', serif; font-style: italic;
+    font-weight: 400; color: var(--muted-2);
+  }
+  .contact .sub {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px; color: var(--muted);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    margin-top: 18px;
+  }
+  .socials {
+    display: flex; flex-direction: column; gap: 0;
+  }
+  .socials a {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 15px;
+    transition: padding-left .25s, color .2s, border-color .2s;
+    color: var(--fg);
+  }
+  .socials a:first-child { border-top: 1px solid var(--line); }
+  .socials a:hover { padding-left: 8px; color: var(--muted-2); border-bottom-color: var(--line-hover); }
+  .socials a .handle {
+    font-family: 'Geist Mono', monospace;
+    color: var(--muted); font-size: 12.5px;
+  }
 
-      var res = Math.floor(Math.random() * 3) + 1;     
-      //alert(res);                       ^ este no. es el número de opciones.
+  .bottom-bar {
+    padding: 22px 24px;
+    border-top: 1px solid var(--line);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'Geist Mono', monospace;
+    font-size: 10.5px; color: var(--muted);
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
 
-	      if(res == 1 ) { 
-	      	var code1 = '<video autoplay loop poster="video_1.jpg" id="bgvid"><source src="video_1.mp4" type="video/mp4"></source><source src="video_1.webm" type="video/webm"></source></video>';
-			document.body.innerHTML = code1;
-	      }
+  /* ---------- MODAL ---------- */
+  .modal {
+    position: fixed; inset: 0; z-index: 100;
+    background: rgba(0,0,0,0.94);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: none; align-items: flex-start; justify-content: center;
+    padding: 48px 24px;
+    overflow-y: auto;
+  }
+  .modal.open { display: flex; animation: fade .25s ease; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+  .modal-content {
+    width: 100%; max-width: 1100px;
+    display: flex; flex-direction: column; gap: 24px;
+    position: relative;
+  }
+  .modal .video-wrap {
+    aspect-ratio: 16/9;
+    background: #000;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .modal iframe {
+    width: 100%; height: 100%; border: 0;
+  }
+  .modal .modal-meta {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 32px; padding-top: 4px;
+    align-items: start;
+  }
+  .modal .modal-meta .cat {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px; color: var(--muted);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .modal .modal-meta h3 {
+    font-size: clamp(22px, 2.6vw, 32px);
+    font-weight: 500; letter-spacing: -0.025em;
+    line-height: 1.15;
+    margin-bottom: 14px;
+  }
+  .modal .modal-meta .desc {
+    font-size: 15px; color: var(--muted-2); line-height: 1.65;
+    max-width: 760px;
+    letter-spacing: -0.005em;
+  }
+  .modal .close {
+    background: transparent; color: var(--fg);
+    border: 1px solid var(--line); border-radius: 999px;
+    padding: 10px 18px; cursor: pointer;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; white-space: nowrap;
+    transition: background .2s, border-color .2s;
+  }
+  .modal .close:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
 
-	      if(res == 2 ) { 
-	        var code2 = '<video autoplay loop poster="video_2.jpg" id="bgvid"><source src="video_2.mp4" type="video/mp4"></source><source src="video_2.webm" type="video/webm"></source></video>';
-			document.body.innerHTML = code2;
-	      }
-		  
-		  if(res == 3 ) { 
-	        var code2 = '<video autoplay loop poster="video_3.jpg" id="bgvid"><source src="video_3.mp4" type="video/mp4"></source><source src="video_3.webm" type="video/webm"></source></video>';
-			document.body.innerHTML = code2;
-	      }
-		   /*if(res == 4 ) { 
-	        var code2 = '<video autoplay loop poster="video_4.jpg" id="bgvid"><source src="video_4.mp4" type="video/mp4"></source><source src="video_4.webm" type="video/webm"></source></video>';
-			document.body.innerHTML = code2;
-	      }*/
-	      
-      }
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 1100px) {
+    .grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 900px) {
+    nav { padding: 12px 16px; }
+    nav .nav-left { gap: 22px; }
+    nav .meta .time { display: none; }
+    nav .meta { gap: 14px; }
+    .hero { padding: 28px 16px 48px; }
+    .grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .about, .contact, .work { padding-left: 16px; padding-right: 16px; }
+    .about { padding-top: 64px; padding-bottom: 64px; }
+    .about-inner { grid-template-columns: 1fr; gap: 36px; justify-items: start; }
+    .about .photo { width: 220px; height: 220px; }
+    .contact { padding-top: 64px; }
+    .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+    .bottom-bar { padding: 18px 16px; flex-direction: column; gap: 6px; }
+  }
+  @media (max-width: 640px) {
+    .grid { grid-template-columns: repeat(2, 1fr); }
+    nav .meta .email-nav { display: none; }
+    .modal { padding: 20px 16px; }
+    .modal .modal-meta { grid-template-columns: 1fr; gap: 20px; }
+    .modal .close { justify-self: start; }
+    .hero h1 { letter-spacing: -0.04em; }
+  }
+</style>
+</head>
+<body>
 
-      //alert(res);
-    </script>
-    <style>
-        video #bgvid { display: block; }
-
-        body { margin: 0; background: #000000; padding:0;}
-
-        @font-face {
-          font-family:Kirvy;
-          src: url('../font/kirvy-light-webfont.eot'); /* IE9 Compat Modes */
-          src: url('../font/kirvy-light-webfont.woff2') format('woff2'), /* Super Modern Browsers */
-               url('../font/kirvy-light-webfont.woff') format('woff'), /* Pretty Modern Browsers */
-               url('../font/kirvy-light-webfont.ttf')  format('truetype'), /* Safari, Android, iOS */
-               url('../font/kirvy-light-webfont.svg#Kirvy') format('svg'); /* Legacy iOS */
-        }
-        
-        video { 
-          position: fixed;
-          top: 50%;
-          left: 50%;
-          min-width: 100%;
-          min-height: 100%;
-          width: auto;
-          height: auto;
-          z-index: -100;
-          -webkit-transform: translateX(-50%) translateY(-50%);
-          transform: translateX(-50%) translateY(-50%);
-          background: url('../images/polina.jpg') no-repeat; background-size: cover;  -webkit-transition: 1s opacity; transition: 1s opacity; 
-        }
-
-        div { font-family: Kirvy, sans-serif; 
-              color: white; 
-              /*padding: 2rem; 
-              width: 33%; 
-              margin: 2rem; 
-              float: right; 
-              font-size: 1.2rem; */
-        }
-
-        #logo { position:absolute; 
-              top:50%;
-              left: 50%;
-              margin-top: -100px; /*Original 130 Photo*/
-              margin-left: -350px;
-        }
-        #boton1 { position:absolute; 
-              top:50%;
-              left: 50%;
-              margin-top: 100px;
-              margin-left: -120px;
-        }
-        #boton2 { position:absolute; 
-              top:50%;
-              left: 50%;
-              margin-top: 100px;
-              margin-left: 20px;
-        }
-        h1 { font-size: 50px; 
-             text-transform: none; 
-             margin-top: 0;
-             letter-spacing: .2rem; 
-        }
-        h2 { font-size: 1rem; 
-             text-transform: none; 
-             margin-top: 0; 
-             letter-spacing: .1rem; 
-        }
-
-        /************************************** Styles for grey buttons **************************************/
-        a { display: inline-block; color: #fff; text-decoration: none; background: rgba(0,0,0,0.5); 
-        padding: .5rem; -webkit-transition: .6s background; transition: .6s background; 
-        }
-        a:hover { background: rgba(255,255,255,0.3);  /*boton return to arcticle hover on*/
-        }
-        .stopfade { opacity: .5; }
-
-        /******************************************************************************************************/
-
-        @media screen and (max-device-width: 800px) {
-          html 
-          { 
-		  	width: 100%;
-			height: 100%;  
-            background: url('mobile_1.jpg') #000 no-repeat center center fixed;
-			background-position-y: top;
-            -moz-background-size: cover;
-			-webkit-background-size: cover;
-            -o-background-size: cover;
-            background-size: cover;
-            /*background: rgba(34,34,134,1);*/
-          }
-          #bgvid { display: none; }
-        }
-    </style>
-    <!--<meta charset=utf-8>-->
-  </head>
-
-  <body>
-    <script type="text/javascript"> choose();</script>
-    <!--<video autoplay loop poster="https://s3-us-west-2.amazonaws.com/s.cdpn.io/4273/polina.jpg" id="bgvid">
-   	  <source src="polina_1.mp4" type="video/webm"></source>
-      	<source src="//demosthenes.info/assets/videos/polina.mp4" type="video/mp4"></source>
-      	<source src="//demosthenes.info/assets/videos/polina.webm" type="video/webm"></source>
-      <source src="//demosthenes.info/assets/videos/polina.mp4" type="video/mp4"></source>
-    </video>-->
-    <div>
-        <div id="logo"> <img src="/font/logo_color_2.png" margin-top: -100px; margin-left: -300px;> </div>
-
-        <div id="boton1">
-          <a href="/EN/home.html">&nbsp&nbsp&nbsp&nbsp&nbsp&nbspEnglish&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</a>
-        </div> 
-
-        <div id="boton2">
-          <a href="/ES/home.html">&nbsp&nbsp&nbsp&nbsp&nbspEspañol&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</a>
-        </div>
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <a href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <div class="nav-right">
+    <div class="meta">
+      <span class="time mono" id="time">--:--:-- --</span>
+      <a href="mailto:luis.fe.ur@gmail.com" class="email-nav">luis.fe.ur@gmail.com</a>
     </div>
-  </body>
+    <a href="#about" class="avatar" aria-label="Luis Uribe">
+      <img src="luis.jpg" alt="Luis Uribe">
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="home">
+  <div class="hero-inner">
+    <h1>Luis Uribe</h1>
+    <div class="role">Video Producer &amp; Editor</div>
+  </div>
+</header>
+
+<!-- WORK GRID -->
+<section class="work">
+  <div class="grid" id="grid"></div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-inner">
+    <div class="photo">
+      <img src="luis.jpg" alt="Luis Uribe">
+    </div>
+    <div class="bio">
+      <div class="label">About</div>
+      <p id="bio-text"></p>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div>
+      <h2>Let's <span class="serif">Talk.</span></h2>
+      <div class="sub">Open to collaborations</div>
+    </div>
+    <div class="socials">
+      <a href="https://www.linkedin.com/in/luisouribe/" target="_blank" rel="noopener">
+        <span>LinkedIn</span><span class="handle">/in/luisouribe ↗</span>
+      </a>
+      <a href="https://www.youtube.com/kulcast" target="_blank" rel="noopener">
+        <span>YouTube</span><span class="handle">/kulcast ↗</span>
+      </a>
+      <a href="mailto:luis.fe.ur@gmail.com">
+        <span>Email</span><span class="handle">luis.fe.ur@gmail.com ↗</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="bottom-bar">
+  <div>© <span id="year"></span> Luis Uribe</div>
+  <div>All rights reserved</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="modal-content">
+    <div class="video-wrap">
+      <iframe id="player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="modal-meta">
+      <div class="left">
+        <div class="cat" id="m-cat"></div>
+        <h3 id="m-title"></h3>
+        <p class="desc" id="m-desc"></p>
+      </div>
+      <button class="close" id="close">Close ✕</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // --- About bio text ---
+  document.getElementById('bio-text').innerHTML =
+    "I'm a video producer and editor with nine years of experience leading narrative-driven projects across documentary, branded content, social media content and long-form essays. I founded Bit920 in 2019 and ran it until 2025, then led production and post-production at Ingenes, one of Latin America's largest fertility clinics, where my team produced content for audiences in Mexico and the United States. " +
+    "Alongside, I built Kulcast, an independent YouTube channel on Japanese culture and music, to 83K subscribers and 37 million total views. " +
+    "<span class='accent'>I'm now looking to join a team producing investigative or documentary video journalism.</span>";
+
+  // --- Projects (in grid order) ---
+  const projects = [
+    {
+      id: '5WnHb1SanaQ',
+      title: 'The Story Behind "Stay with Me"',
+      category: 'Kulcast',
+      description: 'A long-form essay tracing the cultural history and global rediscovery of Miki Matsubara\'s 1979 city pop classic. Researched, written, produced, and co-edited. The channel\'s most-watched horizontal essay, with over 750,000 views on YouTube. Part of Kulcast\'s ongoing exploration of Japanese music history and cultural memory.'
+    },
+    {
+      id: 'DA_v42bNAbA',
+      title: 'What is Plastic Love?',
+      category: 'Kulcast',
+      description: 'A self-produced video essay exploring how Mariya Takeuchi\'s "Plastic Love" became a generational symbol of Japanese city pop decades after its release. Sole author across script, research, production, recording, sound design, and post-production. Published on Kulcast as part of the channel\'s city pop essay series.'
+    },
+    {
+      id: '4Gk4jxCt8Hg',
+      title: 'Cinegrafía — Hans Zimmer',
+      category: 'Sector Cine',
+      description: 'A narrative essay on the work and signature of film composer Hans Zimmer. Long-form piece blending film analysis and musical storytelling. Role: post-production and sound design.'
+    },
+    {
+      id: 'xFFMT6n5MHo',
+      title: 'Somos Eternity México',
+      category: 'Eternity Forwarder MX',
+      description: 'Brand film for Eternity Forwarder Mexico, combining institutional narrative with documentary sensibility. Led creative direction, collaborated with the client on scripting, designed the sound, and supervised editing through final delivery. Produced under Bit920.'
+    },
+    {
+      id: 'IzdSaxiJEg8',
+      title: 'Reserva Ovárica — "Naranjas"',
+      category: 'Ingenes',
+      description: 'Visual metaphor piece for Ingenes, one of Latin America\'s largest fertility clinics. The video translates a complex medical concept — ovarian reserve — into a clear, emotionally resonant story. Role: producer and director. Supervised the project through final delivery.'
+    },
+    {
+      id: 'CqTfSKPa9nk',
+      title: 'Testimonio — Cong Yu',
+      category: 'Ingenes',
+      description: 'Documentary patient testimonial for Ingenes, capturing an intimate fertility journey on camera. Role: producer and director. Supervised post-production through final delivery.'
+    },
+    {
+      id: 'pKw1h0lr2kA',
+      title: 'Surrogate Mexico',
+      category: 'Ingenes',
+      description: 'English-language documentary piece for Ingenes\' international audience, addressing surrogacy services for global patients. Role: producer and director. Supervised the project through final delivery.'
+    },
+  ];
+
+  // --- Render grid ---
+  const grid = document.getElementById('grid');
+  projects.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.index = i;
+    card.innerHTML = `
+      <div class="thumb">
+        <img src="https://i.ytimg.com/vi/${p.id}/maxresdefault.jpg"
+             onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${p.id}/hqdefault.jpg';"
+             alt="${p.title}" loading="lazy">
+      </div>
+      <div class="info">
+        <div class="title">${p.title}</div>
+        <div class="num">[${i + 1}]</div>
+      </div>
+      <div class="cat">${p.category}</div>
+    `;
+    card.addEventListener('click', () => openVideo(i));
+    grid.appendChild(card);
+  });
+
+  // --- Modal ---
+  const modal  = document.getElementById('modal');
+  const player = document.getElementById('player');
+  const mTitle = document.getElementById('m-title');
+  const mCat   = document.getElementById('m-cat');
+  const mDesc  = document.getElementById('m-desc');
+  const closeBtn = document.getElementById('close');
+
+  function openVideo(idx) {
+    const p = projects[idx];
+    player.src = `https://www.youtube-nocookie.com/embed/${p.id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+    mTitle.textContent = p.title;
+    mCat.textContent   = p.category;
+    mDesc.textContent  = p.description;
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeVideo() {
+    modal.classList.remove('open');
+    player.src = '';
+    document.body.style.overflow = '';
+  }
+  closeBtn.addEventListener('click', closeVideo);
+  modal.addEventListener('click', (e) => { if (e.target === modal) closeVideo(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeVideo(); });
+
+  // --- Live clock ---
+  const timeEl = document.getElementById('time');
+  function tick() {
+    const d = new Date();
+    let h = d.getHours();
+    const m = String(d.getMinutes()).padStart(2,'0');
+    const s = String(d.getSeconds()).padStart(2,'0');
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    h = h % 12 || 12;
+    timeEl.textContent = `${String(h).padStart(2,'0')}:${m}:${s} ${ampm}`;
+  }
+  tick(); setInterval(tick, 1000);
+
+  // --- Year ---
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
 </html>
