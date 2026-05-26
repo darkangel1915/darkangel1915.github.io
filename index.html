@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script>document.documentElement.classList.add('js');</script>
 <title>Luis Uribe — Video Producer & Editor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -299,6 +300,71 @@
   }
   .modal .close:hover { background: var(--fg); color: var(--bg); border-color: var(--fg); }
 
+  /* ---------- ANIMATIONS (only when JS is on) ---------- */
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity 0.9s ease-out, transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  .js .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* Hero letter reveal */
+  .js .hero h1 .char-wrap {
+    display: inline-block;
+    overflow: hidden;
+    vertical-align: top;
+    padding-bottom: 0.04em; /* avoid clipping descenders */
+  }
+  .js .hero h1 .char {
+    display: inline-block;
+    transform: translateY(115%);
+    transition: transform 1s cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: transform;
+  }
+  .js .hero h1.in .char { transform: translateY(0); }
+  .js .hero .role {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.9s ease-out, transform 0.9s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .js .hero .role.in { opacity: 1; transform: translateY(0); }
+
+  /* About photo: subtle scale + fade */
+  .js .about .photo {
+    opacity: 0;
+    transform: scale(0.92);
+    transition: opacity 1.1s ease-out, transform 1.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  .js .about .photo.in { opacity: 1; transform: scale(1); }
+
+  /* About bio: only words animate, container stays put (so word stagger isn't masked) */
+  .js .bio.reveal { opacity: 1; transform: none; transition: none; }
+  .js .word {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.55s ease-out, transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+    will-change: opacity, transform;
+  }
+  .js .bio.in .word { opacity: 1; transform: translateY(0); }
+
+  /* Subtle stagger on grid cards based on column index */
+  .js .card.reveal { transition-delay: calc(var(--col, 0) * 80ms); }
+
+  /* Respect users who prefer reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .js .reveal, .js .reveal.in,
+    .js .char, .js .hero h1.in .char,
+    .js .hero .role, .js .hero .role.in,
+    .js .about .photo, .js .about .photo.in,
+    .js .word, .js .bio.in .word {
+      opacity: 1 !important;
+      transform: none !important;
+      transition: none !important;
+    }
+  }
+
   /* ---------- RESPONSIVE ---------- */
   @media (max-width: 1100px) {
     .grid { grid-template-columns: repeat(4, 1fr); }
@@ -364,10 +430,10 @@
 <!-- ABOUT -->
 <section class="about" id="about">
   <div class="about-inner">
-    <div class="photo">
+    <div class="photo reveal">
       <img src="luis.jpg" alt="Luis Uribe">
     </div>
-    <div class="bio">
+    <div class="bio reveal">
       <div class="label">About</div>
       <p id="bio-text"></p>
     </div>
@@ -378,17 +444,17 @@
 <section class="contact" id="contact">
   <div class="contact-inner">
     <div>
-      <h2>Let's <span class="serif">Talk.</span></h2>
-      <div class="sub">Open to collaborations</div>
+      <h2 class="reveal">Let's <span class="serif">Talk.</span></h2>
+      <div class="sub reveal">Open to collaborations</div>
     </div>
     <div class="socials">
-      <a href="https://www.linkedin.com/in/luisouribe/" target="_blank" rel="noopener">
+      <a class="reveal" href="https://www.linkedin.com/in/luisouribe/" target="_blank" rel="noopener">
         <span>LinkedIn</span><span class="handle">/in/luisouribe ↗</span>
       </a>
-      <a href="https://www.youtube.com/kulcast" target="_blank" rel="noopener">
+      <a class="reveal" href="https://www.youtube.com/kulcast" target="_blank" rel="noopener">
         <span>YouTube</span><span class="handle">/kulcast ↗</span>
       </a>
-      <a href="mailto:luis.fe.ur@gmail.com">
+      <a class="reveal" href="mailto:luis.fe.ur@gmail.com">
         <span>Email</span><span class="handle">luis.fe.ur@gmail.com ↗</span>
       </a>
     </div>
@@ -474,8 +540,9 @@
   const grid = document.getElementById('grid');
   projects.forEach((p, i) => {
     const card = document.createElement('div');
-    card.className = 'card';
+    card.className = 'card reveal';
     card.dataset.index = i;
+    card.style.setProperty('--col', i % 5); // stagger within a row
     card.innerHTML = `
       <div class="thumb">
         <img src="https://i.ytimg.com/vi/${p.id}/maxresdefault.jpg"
@@ -533,6 +600,92 @@
 
   // --- Year ---
   document.getElementById('year').textContent = new Date().getFullYear();
+
+  // =========================================================
+  // ANIMATIONS
+  // =========================================================
+
+  // --- 1. Split hero name into per-letter wrappers ---
+  const heroH1 = document.querySelector('.hero h1');
+  if (heroH1) {
+    const text = heroH1.textContent;
+    heroH1.textContent = '';
+    let visibleIndex = 0;
+    [...text].forEach((ch) => {
+      if (ch === ' ') {
+        heroH1.appendChild(document.createTextNode(' '));
+      } else {
+        const wrap = document.createElement('span');
+        wrap.className = 'char-wrap';
+        const inner = document.createElement('span');
+        inner.className = 'char';
+        inner.textContent = ch;
+        inner.style.transitionDelay = `${80 + visibleIndex * 55}ms`;
+        wrap.appendChild(inner);
+        heroH1.appendChild(wrap);
+        visibleIndex++;
+      }
+    });
+  }
+
+  // --- 2. Wrap bio paragraph words ---
+  function wrapWords(rootElement, wordStaggerMs = 22) {
+    let wordIndex = 0;
+    const wrap = (node) => {
+      if (node.nodeType === 3) {
+        // text node
+        const parent = node.parentNode;
+        const parts = node.textContent.split(/(\s+)/);
+        const frag = document.createDocumentFragment();
+        parts.forEach((part) => {
+          if (part === '' ) return;
+          if (/^\s+$/.test(part)) {
+            frag.appendChild(document.createTextNode(part));
+          } else {
+            const span = document.createElement('span');
+            span.className = 'word';
+            span.textContent = part;
+            span.style.transitionDelay = `${wordIndex * wordStaggerMs}ms`;
+            wordIndex++;
+            frag.appendChild(span);
+          }
+        });
+        parent.replaceChild(frag, node);
+      } else if (node.nodeType === 1) {
+        [...node.childNodes].forEach(wrap);
+      }
+    };
+    [...rootElement.childNodes].forEach(wrap);
+  }
+  const bioP = document.getElementById('bio-text');
+  if (bioP) wrapWords(bioP, 18);
+
+  // --- 3. IntersectionObserver for any .reveal element ---
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+  document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+  // --- 4. Trigger hero animation on load ---
+  function playHero() {
+    if (heroH1) heroH1.classList.add('in');
+    const role = document.querySelector('.hero .role');
+    if (role) {
+      // wait until letters mostly settled
+      setTimeout(() => role.classList.add('in'), 650);
+    }
+  }
+  if (document.readyState === 'complete') {
+    requestAnimationFrame(playHero);
+  } else {
+    window.addEventListener('load', () => requestAnimationFrame(playHero));
+  }
 </script>
 
 </body>
