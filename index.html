@@ -97,6 +97,80 @@
     line-height: 1;
   }
 
+  /* ---------- DEMO REEL ---------- */
+  .reel-section {
+    padding: 48px 24px 16px;
+  }
+  .reel-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 18px;
+  }
+  .reel-head .label {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px; color: var(--muted);
+    letter-spacing: 0.22em; text-transform: uppercase;
+  }
+  .reel-head .caption {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px; color: var(--muted);
+    letter-spacing: 0.12em; text-transform: uppercase;
+  }
+  .reel-card {
+    cursor: pointer;
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--bg-2);
+    transition: transform .35s cubic-bezier(.2,.7,.2,1);
+  }
+  .reel-card:hover { transform: translateY(-2px); }
+  .reel-card .reel-thumb {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    position: relative;
+  }
+  .reel-card .reel-thumb img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform 1s cubic-bezier(.2,.7,.2,1), filter .4s;
+    filter: brightness(0.88);
+  }
+  .reel-card:hover .reel-thumb img { transform: scale(1.025); filter: brightness(1); }
+  .reel-card .reel-thumb::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.45) 0%, transparent 35%);
+    pointer-events: none;
+  }
+  .reel-card .reel-play {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 84px; height: 84px; border-radius: 50%;
+    background: rgba(10,10,10,0.55);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    transition: background .25s, transform .35s, border-color .25s;
+    z-index: 2;
+  }
+  .reel-card:hover .reel-play {
+    background: rgba(255,255,255,0.95);
+    border-color: rgba(255,255,255,0.95);
+    transform: translate(-50%, -50%) scale(1.08);
+  }
+  .reel-card .reel-play svg {
+    width: 32px; height: 32px; fill: #fff;
+    margin-left: 4px;
+    transition: fill .25s;
+  }
+  .reel-card:hover .reel-play svg { fill: var(--bg); }
+  .reel-card .reel-badge {
+    position: absolute; left: 18px; bottom: 18px; z-index: 2;
+    font-family: 'Geist Mono', monospace;
+    font-size: 11px; color: #fff;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    opacity: 0.85;
+  }
+
   /* ---------- GRID ---------- */
   .work {
     padding: 36px 24px 68px;
@@ -384,7 +458,10 @@
     nav .meta { gap: 14px; }
     .hero { padding: 28px 16px 48px; }
     .grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .about, .contact, .work { padding-left: 16px; padding-right: 16px; }
+    .about, .contact, .work, .reel-section { padding-left: 16px; padding-right: 16px; }
+    .reel-section { padding-top: 32px; }
+    .reel-card .reel-play { width: 64px; height: 64px; }
+    .reel-card .reel-play svg { width: 24px; height: 24px; }
     .about { padding-top: 64px; padding-bottom: 64px; }
     .about-inner { grid-template-columns: 1fr; gap: 36px; justify-items: start; }
     .about .photo { width: 220px; height: 220px; }
@@ -430,6 +507,23 @@
   </div>
 </header>
 
+<!-- DEMO REEL -->
+<section class="reel-section">
+  <div class="reel-head">
+    <div class="label">Demo Reel</div>
+    <div class="caption">Selected Work — 2025</div>
+  </div>
+  <div class="reel-card reveal" id="reel-card" role="button" aria-label="Play demo reel">
+    <div class="reel-thumb">
+      <img src="https://i.ytimg.com/vi/zBeCuY0x7cY/maxresdefault.jpg"
+           onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/zBeCuY0x7cY/hqdefault.jpg';"
+           alt="Demo Reel" loading="lazy">
+      <div class="reel-play"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="reel-badge">▶ Play Reel</div>
+    </div>
+  </div>
+</section>
+
 <!-- WORK GRID -->
 <section class="work">
   <div class="grid" id="grid"></div>
@@ -461,6 +555,12 @@
       </a>
       <a class="reveal" href="https://www.youtube.com/kulcast" target="_blank" rel="noopener">
         <span>YouTube</span><span class="handle">/kulcast ↗</span>
+      </a>
+      <a class="reveal" href="https://www.instagram.com/kulcast/" target="_blank" rel="noopener">
+        <span>Instagram</span><span class="handle">@kulcast ↗</span>
+      </a>
+      <a class="reveal" href="https://www.tiktok.com/@kulcast" target="_blank" rel="noopener">
+        <span>TikTok</span><span class="handle">@kulcast ↗</span>
       </a>
       <a class="reveal" href="mailto:luis.fe.ur@gmail.com">
         <span>Email</span><span class="handle">luis.fe.ur@gmail.com ↗</span>
@@ -553,6 +653,12 @@
       category: 'Ingenes',
       description: 'Educational piece for Ingenes explaining the medical concept of low ovocyte quality. Translates complex fertility terminology into accessible, emotionally resonant visual storytelling. Role: producer and director. Supervised post-production through final delivery.'
     },
+    {
+      id: 'dtX99QJ9n9g',
+      title: 'Kul Sessions',
+      category: 'Kulcast',
+      description: 'Produced and edited an acoustic session series for Kulcast, featuring Bakemono — a Mexico City-based collective dedicated to anisong (anime music).'
+    },
   ];
 
   // --- Render grid ---
@@ -586,8 +692,7 @@
   const mDesc  = document.getElementById('m-desc');
   const closeBtn = document.getElementById('close');
 
-  function openVideo(idx) {
-    const p = projects[idx];
+  function playVideo(p) {
     player.src = `https://www.youtube-nocookie.com/embed/${p.id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
     mTitle.textContent = p.title;
     mCat.textContent   = p.category;
@@ -595,6 +700,17 @@
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
+  function openVideo(idx) { playVideo(projects[idx]); }
+
+  // Demo Reel click handler
+  const reelData = {
+    id: 'zBeCuY0x7cY',
+    title: 'Demo Reel',
+    category: 'Showreel — 2025',
+    description: "A selection of recent work across documentary, branded content, and editorial pieces. The reel highlights nine years of producing and editing narrative-driven content for clients and original channels."
+  };
+  const reelCard = document.getElementById('reel-card');
+  if (reelCard) reelCard.addEventListener('click', () => playVideo(reelData));
   function closeVideo() {
     modal.classList.remove('open');
     player.src = '';
