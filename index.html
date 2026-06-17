@@ -366,6 +366,7 @@
     font-size: 15px; color: var(--muted-2); line-height: 1.65;
     max-width: 760px;
     letter-spacing: -0.005em;
+    white-space: pre-line; /* respeta saltos de linea \n en la descripcion */
   }
   .modal .close {
     background: transparent; color: var(--fg);
@@ -601,7 +602,22 @@
     "I'm a video producer and editor with nine years of experience creating narrative driven content. I started in entertainment media and marketing agencies, then coordinated post production at Genomma Lab launching @genomma on Instagram. I founded Bit920, creating branded content for health and logistics clients. At Ingenes, I led production and post production for internal and external content in both English and Spanish, while beginning to implement AI in our content creation workflows at one of Latin America's largest fertility clinics. I also built Kulcast, a YouTube channel on Japanese culture, anime, video games and music, with 83K subscribers and 170K followers across platforms. " +
     "<span class='accent'>Based in Mexico City, always interested in projects with purpose.</span>";
 
-  // --- Projects (in grid order) ---
+  // ===============================================================
+  //  PROJECTS — el grid se construye automaticamente desde este array
+  // ===============================================================
+  //  Para agregar un proyecto nuevo, copia este bloque y pegalo al
+  //  final del array (antes del "];"). Solo cambia los 4 valores:
+  //
+  //    {
+  //      id: 'XXXXXXXXXXX',        // el ID de YouTube (lo que va despues de v= o youtu.be/)
+  //      title: 'Mi nuevo video',  // el titulo (puede estar en espanol o ingles)
+  //      category: 'Cliente',      // el cliente o canal (KULCAST, INGENES, etc.)
+  //      description: '...'        // descripcion en ingles, se ve en el modal
+  //    },
+  //
+  //  Para reordenar: sube/baja un bloque entero ({ ... }) dentro del array.
+  //  Para borrar: borra todo el bloque incluyendo la coma final.
+  // ===============================================================
   const projects = [
     {
       id: '5WnHb1SanaQ',
@@ -614,6 +630,12 @@
       title: 'What is Plastic Love?',
       category: 'Kulcast',
       description: 'A self-produced video essay exploring how Mariya Takeuchi\'s "Plastic Love" became a generational symbol of Japanese city pop decades after its release. Sole author across script, research, production, recording, sound design, and post-production. Published on Kulcast as part of the channel\'s city pop essay series.'
+    },
+    {
+      id: 'RGm8OCKGCCE',
+      title: 'Iroha',
+      category: 'AI Experiments',
+      description: "Story about memory and the things we leave behind. On her last day of High School, Iroha relives the moments that made her who she is today.\n\nA short film about nostalgia, longing, and the memories we thought we'd forgotten.\n\nOriginal Idea & Script: Luis Uribe\nEditing: Luis Uribe\nVisual and music all generated with AI\nMade in Higgsfield, Seedance, Banana Pro, GPT-Image & Suno"
     },
     {
       id: '4Gk4jxCt8Hg',
