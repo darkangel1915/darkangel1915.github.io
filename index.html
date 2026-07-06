@@ -754,6 +754,30 @@
     },
   ];
 
+  // --- Helper: set thumbnail with intelligent fallback chain ---
+  //   Orden de intento:
+  //     1. p.thumb (si lo defines en el proyecto, ej: "thumbs/mi-thumb.jpg")
+  //     2. maxresdefault.jpg (mejor calidad de YouTube)
+  //     3. hqdefault.jpg (fallback)
+  //   Ademas detecta si YouTube devuelve un placeholder gris chico y salta al siguiente.
+  function setThumbnail(img, p) {
+    const sources = [];
+    if (p.thumb) sources.push(p.thumb);
+    sources.push(`https://i.ytimg.com/vi/${p.id}/maxresdefault.jpg`);
+    sources.push(`https://i.ytimg.com/vi/${p.id}/hqdefault.jpg`);
+    let i = 0;
+    const tryNext = () => {
+      if (i >= sources.length) { img.onerror = null; img.onload = null; return; }
+      img.src = sources[i++];
+    };
+    img.onerror = tryNext;
+    img.onload = () => {
+      // Placeholder gris de YouTube = 120x90. Si es asi de chica, salta.
+      if (img.naturalWidth > 0 && img.naturalWidth < 200 && i < sources.length) tryNext();
+    };
+    tryNext();
+  }
+
   // --- Render grid ---
   const grid = document.getElementById('grid');
   projects.forEach((p, i) => {
@@ -763,9 +787,7 @@
     card.style.setProperty('--col', i % 5); // stagger within a row
     card.innerHTML = `
       <div class="thumb">
-        <img src="https://i.ytimg.com/vi/${p.id}/maxresdefault.jpg"
-             onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${p.id}/hqdefault.jpg';"
-             alt="${p.title}" loading="lazy">
+        <img alt="${p.title}" loading="lazy">
       </div>
       <div class="info">
         <div class="title">${p.title}</div>
@@ -773,6 +795,7 @@
       </div>
       <div class="cat">${p.category}</div>
     `;
+    setThumbnail(card.querySelector('.thumb img'), p);
     card.addEventListener('click', () => openVideo(i));
     grid.appendChild(card);
   });
@@ -799,7 +822,7 @@
       orientation: 'vertical'
     },
     {
-      id: 'nu28IRim2fg',
+      id: 'xm7JvDFQaxo',
       title: 'Reserva Ovárica — Fertilidad',
       category: 'Ingenes · 2025',
       role: 'Directed, shot & supervised (edited by team)',
