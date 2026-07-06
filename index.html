@@ -20,6 +20,8 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
+  /* Offset para que el nav sticky no tape el section al hacer scroll a un anchor */
+  section[id], header[id] { scroll-margin-top: 72px; }
   body {
     background: var(--bg);
     color: var(--fg);
@@ -225,6 +227,22 @@
     font-weight: 400;
   }
 
+  /* ---------- VERTICAL GRID ---------- */
+  .vertical {
+    padding: 20px 24px 68px;
+  }
+  .grid-vertical {
+    grid-template-columns: repeat(3, 1fr);
+    max-width: 960px;
+    margin-inline: auto;
+    gap: 22px 20px;
+  }
+  .card-vertical .thumb {
+    aspect-ratio: 9 / 16;
+  }
+  /* object-fit: cover already recorta el 16:9 al centro vertical,
+     que en Shorts es donde vive el contenido real. */
+
   /* ---------- ABOUT ---------- */
   .about {
     padding: 88px 24px;
@@ -360,13 +378,44 @@
     font-size: clamp(22px, 2.6vw, 32px);
     font-weight: 500; letter-spacing: -0.025em;
     line-height: 1.15;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
+  .modal .modal-meta .role {
+    font-family: 'Geist Mono', monospace;
+    font-size: 11.5px; color: var(--fg);
+    letter-spacing: 0.06em;
+    margin-bottom: 14px;
+    opacity: 0.75;
+  }
+  .modal .modal-meta .role:empty { display: none; }
   .modal .modal-meta .desc {
     font-size: 15px; color: var(--muted-2); line-height: 1.65;
     max-width: 760px;
     letter-spacing: -0.005em;
     white-space: pre-line; /* respeta saltos de linea \n en la descripcion */
+  }
+
+  /* --- Modal en modo VERTICAL (9:16) --- */
+  .modal.vertical .modal-content {
+    max-width: 920px;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 44px;
+  }
+  .modal.vertical .video-wrap {
+    width: 340px;
+    aspect-ratio: 9 / 16;
+    flex-shrink: 0;
+  }
+  .modal.vertical .modal-meta {
+    grid-template-columns: 1fr;
+    padding-top: 8px;
+    gap: 24px;
+    flex: 1;
+  }
+  .modal.vertical .close {
+    justify-self: start;
+    margin-top: 8px;
   }
   .modal .close {
     background: transparent; color: var(--fg);
@@ -463,10 +512,19 @@
     nav .meta { gap: 14px; }
     .hero { padding: 28px 16px 48px; }
     .grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
-    .about, .contact, .work, .reel-section { padding-left: 16px; padding-right: 16px; }
+    .about, .contact, .work, .reel-section, .vertical { padding-left: 16px; padding-right: 16px; }
     .reel-section { padding-top: 32px; }
     .reel-card .reel-play { width: 64px; height: 64px; }
     .reel-card .reel-play svg { width: 24px; height: 24px; }
+    .grid-vertical { grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    /* Modal vertical: stack para pantallas medianas */
+    .modal.vertical .modal-content {
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+    }
+    .modal.vertical .video-wrap { width: min(300px, 60vw); }
+    .modal.vertical .modal-meta { width: 100%; }
     .about { padding-top: 64px; padding-bottom: 64px; }
     .about-inner { grid-template-columns: 1fr; gap: 36px; justify-items: start; }
     .about .photo { width: 220px; height: 220px; }
@@ -476,6 +534,7 @@
   }
   @media (max-width: 640px) {
     .grid { grid-template-columns: repeat(2, 1fr); }
+    .grid-vertical { grid-template-columns: 1fr; max-width: 320px; }
     nav .meta .email-nav { display: none; }
     .modal { padding: 20px 16px; }
     .modal .modal-meta { grid-template-columns: 1fr; gap: 20px; }
@@ -490,6 +549,8 @@
 <nav>
   <div class="nav-left">
     <a href="#home">Home</a>
+    <a href="#work">Long Format</a>
+    <a href="#vertical">Vertical</a>
     <a href="#about">About</a>
     <a href="#contact">Contact</a>
   </div>
@@ -529,9 +590,14 @@
   </div>
 </section>
 
-<!-- WORK GRID -->
-<section class="work">
+<!-- WORK GRID (Long Format) -->
+<section class="work" id="work">
   <div class="grid" id="grid"></div>
+</section>
+
+<!-- VERTICAL GRID -->
+<section class="vertical" id="vertical">
+  <div class="grid grid-vertical" id="vertical-grid"></div>
 </section>
 
 <!-- ABOUT -->
@@ -589,6 +655,7 @@
       <div class="left">
         <div class="cat" id="m-cat"></div>
         <h3 id="m-title"></h3>
+        <div class="role" id="m-role"></div>
         <p class="desc" id="m-desc"></p>
       </div>
       <button class="close" id="close">Close ✕</button>
@@ -710,19 +777,75 @@
     grid.appendChild(card);
   });
 
+  // ===============================================================
+  //  VERTICAL PROJECTS — mismo formato, se marca con orientation: 'vertical'
+  //  para que el modal se ajuste a 9:16 automaticamente.
+  // ===============================================================
+  const verticalProjects = [
+    {
+      id: 'EzRxg5iAScQ',
+      title: 'UGC Sony WH-1000XM5',
+      category: 'Spec / AI Video Exercise · 2026',
+      role: 'Produced & edited',
+      description: "A self-directed spec ad exploring an AI-driven UGC workflow. The presenter is a fully AI-generated avatar; I built the scenes with generative tools, combined them with my own product photography, and edited the final vertical cut in Premiere. Made to practice AI video production and to expand my short-form editing samples — not a commissioned Sony campaign.",
+      orientation: 'vertical'
+    },
+    {
+      id: '6NtkMm2OwcA',
+      title: 'Is It Too Late to Learn Unreal Engine?',
+      category: 'AI Video Exercise · 2026',
+      role: 'Edited (AI-assisted)',
+      description: "A short-form editing exercise built from a podcast clip, where I practiced integrating AI tools into a real editing workflow. Made to develop my AI-assisted post-production process and add self-edited vertical samples to my reel — a personal exercise, not client work.",
+      orientation: 'vertical'
+    },
+    {
+      id: 'nu28IRim2fg',
+      title: 'Reserva Ovárica — Fertilidad',
+      category: 'Ingenes · 2025',
+      role: 'Directed, shot & supervised (edited by team)',
+      description: "A vertical educational piece for one of Latin America's largest fertility clinics. I directed the shoot, operated camera, and supervised post-production through final cut. Part of a high-volume content operation producing short-form for audiences in Mexico and the U.S.",
+      orientation: 'vertical'
+    },
+  ];
+
+  const verticalGrid = document.getElementById('vertical-grid');
+  verticalProjects.forEach((p, i) => {
+    const card = document.createElement('div');
+    card.className = 'card card-vertical reveal';
+    card.style.setProperty('--col', i % 3);
+    card.innerHTML = `
+      <div class="thumb">
+        <img src="https://i.ytimg.com/vi/${p.id}/maxresdefault.jpg"
+             onerror="this.onerror=null;this.src='https://i.ytimg.com/vi/${p.id}/hqdefault.jpg';"
+             alt="${p.title}" loading="lazy">
+      </div>
+      <div class="info">
+        <div class="title">${p.title}</div>
+        <div class="num">[${i + 1}]</div>
+      </div>
+      <div class="cat">${p.category}</div>
+    `;
+    card.addEventListener('click', () => playVideo(p));
+    verticalGrid.appendChild(card);
+  });
+
   // --- Modal ---
   const modal  = document.getElementById('modal');
   const player = document.getElementById('player');
   const mTitle = document.getElementById('m-title');
   const mCat   = document.getElementById('m-cat');
   const mDesc  = document.getElementById('m-desc');
+  const mRole  = document.getElementById('m-role');
   const closeBtn = document.getElementById('close');
 
   function playVideo(p) {
+    const isVertical = p.orientation === 'vertical';
+    modal.classList.toggle('vertical', isVertical);
     player.src = `https://www.youtube-nocookie.com/embed/${p.id}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
     mTitle.textContent = p.title;
     mCat.textContent   = p.category;
     mDesc.textContent  = p.description;
+    mRole.textContent  = p.role || '';
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
   }
